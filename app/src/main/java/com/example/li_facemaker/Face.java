@@ -1,7 +1,11 @@
 package com.example.li_facemaker;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.view.SurfaceView;
 
 import java.util.Random;
 
@@ -15,15 +19,34 @@ import java.util.Random;
  *
  **/
 
-public class Face extends MainActivity {
+public class Face extends SurfaceView {
     public int skinColor;
     public int eyeColor;
     public int hairColor;
     public int hairStyle;
 
-    public Face() {
+    Paint facePaint = new Paint();
+    Paint eyePaint = new Paint();
+    Paint hairPaint = new Paint();
+
+    Paint nosePaint = new Paint();
+    Paint mouthPaint = new Paint();
+
+
+
+
+
+
+    public Face(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        setWillNotDraw(false);
         //randomizes the variables
         randomize();
+
+        facePaint.setColor(0xFFFFFACD);
+
+        setBackgroundColor(Color.WHITE);
 
     }
 
@@ -54,6 +77,7 @@ public class Face extends MainActivity {
     //onDraw method
     public void onDraw(Canvas canvas) {
 
+        canvas.drawCircle(500, 500, 100, facePaint);
     }
 
     public int getSkinColor() {

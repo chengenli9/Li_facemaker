@@ -192,8 +192,9 @@
         android:layout_marginBottom="10dp"
         android:text="RANDOM FACE" />
 
-    <SurfaceView
-        android:id="@+id/surfaceView"
+    <com.example.li_facemaker.Face
+        android:id="@+id/face_window"
+        android:background="@drawable/my_border"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
