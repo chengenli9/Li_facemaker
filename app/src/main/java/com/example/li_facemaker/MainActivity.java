@@ -17,12 +17,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         tvOne = findViewById(R.id.numRed);
         tvTwo = findViewById(R.id.numBlue);
         tvThree = findViewById(R.id.numGreen);
+
+
+        Button randomFace = findViewById(R.id.random_face);
+
+        Face faceView = findViewById(R.id.face_window);
 
 
         seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -110,31 +117,52 @@ public class MainActivity extends AppCompatActivity {
         //code to implement spinner was borrowed from:
         //https://www.youtube.com/watch?v=4ogzfAipGS8
 
-        Spinner spinner = findViewById(R.id.action_bar_spinner);
+        Spinner spinner = findViewById(R.id.HairStyles);
+
+        //create the arrayList for the spinner
+        ArrayList<String> styles = new ArrayList<>();
+
+        //add strings to arrayList
+        styles.add("None Selected");
+        styles.add("Bowl");
+        styles.add("Buzz");
+        styles.add("Middle Part");
+        styles.add("MoHawk");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, styles);
+        adapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+        spinner.setAdapter(adapter);
+
+        Random random = new Random();
+        int randomIndex = random.nextInt(styles.size());
+
+        // Set the randomly selected item as the selected item in the spinner
+        spinner.setSelection(randomIndex);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                String item = adapterView.getItemAtPosition(position).toString();
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String item = adapterView.getItemAtPosition(i).toString();
                 Toast.makeText(MainActivity.this, "Selected Item: " + item, Toast.LENGTH_SHORT).show();
+                faceView.setHairStyle(i);
+                faceView.invalidate();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
+
         });
 
-        //create the arrayList for the spinner
-        ArrayList<String> arrayList = new ArrayList<>();
+        randomFace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                faceView.randomize();
+                spinner.setSelection(randomIndex);
+            }
+        });
 
-        //add strings to arrayList
-        arrayList.add("None Selected");
-        arrayList.add("Middle Part");
-        arrayList.add("Fringe");
-        arrayList.add("Brush Back");
-        arrayList.add("Bowl Cut");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayList);
-        adapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
-        spinner.setAdapter(adapter);
+
+
     }
 }
