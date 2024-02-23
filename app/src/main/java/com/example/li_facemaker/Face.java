@@ -29,6 +29,7 @@ public class Face extends SurfaceView {
 
     Paint facePaint = new Paint();
     Paint eyePaint = new Paint();
+    Paint eyeWhite = new Paint();
     Paint hairPaint = new Paint();
 
     Paint nosePaint = new Paint();
@@ -41,19 +42,22 @@ public class Face extends SurfaceView {
     public Face(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+
+        randomize();
         setWillNotDraw(false);
         //randomizes the variables
-        randomize();
+
 
         setHairStyle(hairStyle);
 
-        facePaint.setColor(skinColor);
-        hairPaint.setColor(hairColor);
-        eyePaint.setColor(eyeColor);
 
+        eyeWhite.setColor(Color.WHITE);
+        mouthPaint.setColor(Color.WHITE);
         setBackgroundColor(Color.WHITE);
 
     }
+
+
 
     /**
      * randomize()
@@ -84,6 +88,10 @@ public class Face extends SurfaceView {
     //onDraw method
     public void onDraw(Canvas canvas) {
 
+        facePaint.setColor(skinColor);
+        hairPaint.setColor(hairColor);
+        eyePaint.setColor(eyeColor);
+
         float sv_width = canvas.getWidth();
         float sv_height = canvas.getHeight();
 
@@ -96,20 +104,28 @@ public class Face extends SurfaceView {
         RectF midPartLeft = new RectF(centerX - 250, centerY - 300, centerX + 180, centerY + 100);
 
 
-        //face
+        //draw face
         canvas.drawOval(face_ref, facePaint);
-        //left eye
-        canvas.drawCircle(centerX - 80, centerY - 10, 30, eyePaint);
-        //right eye
-        canvas.drawCircle(centerX + 80, centerY - 10, 30, eyePaint);
 
-        //left ear
-        canvas.drawCircle(centerX - 210, centerY , 35, facePaint);
-        //right ear
-        canvas.drawCircle(centerX + 210, centerY, 35, facePaint);
+        //draw left eye
+        canvas.drawOval(centerX - 120, centerY - 40, centerX - 55, centerY + 10, eyeWhite);
+        canvas.drawCircle(centerX - 80, centerY - 10, 20, eyePaint);
+        //draw right eye
+        canvas.drawOval(centerX + 120, centerY - 40, centerX + 55, centerY + 10, eyeWhite);
+        canvas.drawCircle(centerX + 80, centerY - 10, 20, eyePaint);
 
-        //mouth
-        canvas.drawRect(centerX, centerY, centerX, centerY, mouthPaint);
+        //draw left ear
+        canvas.drawCircle(centerX - 200, centerY , 40, facePaint);
+        //draw right ear
+        canvas.drawCircle(centerX + 200, centerY, 40, facePaint);
+
+        //draw mouth
+        RectF mouth = new RectF(centerX - 80, centerY + 50, centerX + 80, centerY+ 150);
+        canvas.drawArc(mouth, 0, 180, true, mouthPaint);
+
+        //draw nose
+        RectF nose = new RectF(centerX - 15, centerY, centerX + 15, centerY + 100);
+        canvas.drawArc(nose, 0, -180, true, mouthPaint);
 
         if (hairStyle == 1) {
             canvas.drawArc(bowlcut, 0, -180, true, hairPaint);
@@ -133,7 +149,7 @@ public class Face extends SurfaceView {
 
     public int getSkinColor() {
 
-        return skinColor;
+        return this.skinColor;
     }
 
     public void setSkinColor(int skinColor) {
@@ -149,10 +165,11 @@ public class Face extends SurfaceView {
     }
 
     public int getHairColor() {
-        return hairColor;
+        return this.hairColor;
     }
 
     public void setHairColor(int hairColor) {
+
         this.hairColor = hairColor;
     }
 

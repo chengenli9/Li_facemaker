@@ -13,11 +13,13 @@ package com.example.li_facemaker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -35,17 +37,24 @@ public class MainActivity extends AppCompatActivity {
     TextView tvTwo;
     TextView tvThree;
 
+    Button randomFace;
+
+    Face faceView;
+
+    RadioGroup radioGroup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         //seekbar for red
         seekBar1 = findViewById(R.id.red_seekBar);
         //seekbar for blue;
-        seekBar2 = findViewById(R.id.blue_seekBar);
+        seekBar2 = findViewById(R.id.green_seekBar);
         //seekbar for green;
-        seekBar3 = findViewById(R.id.green_seekBar);
+        seekBar3 = findViewById(R.id.blue_seekBar);
 
         //references the textview
         tvOne = findViewById(R.id.numRed);
@@ -53,9 +62,11 @@ public class MainActivity extends AppCompatActivity {
         tvThree = findViewById(R.id.numGreen);
 
 
-        Button randomFace = findViewById(R.id.random_face);
+        randomFace = findViewById(R.id.random_face);
 
-        Face faceView = findViewById(R.id.face_window);
+        faceView = findViewById(R.id.face_window);
+
+        radioGroup = findViewById(R.id.radio_group);
 
 
         seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -65,6 +76,17 @@ public class MainActivity extends AppCompatActivity {
 
                 //sets the text based on progress value
                 tvOne.setText(progress + "");
+
+                if (radioGroup.getCheckedRadioButtonId() == R.id.hair_button) {
+                    faceView.setHairColor(Color.rgb(progress, seekBar2.getProgress(), seekBar3.getProgress()));
+
+                } else if (radioGroup.getCheckedRadioButtonId() == R.id.eye_button) {
+                    faceView.setEyeColor(Color.rgb(progress, seekBar2.getProgress(), seekBar3.getProgress()));
+                } else if (radioGroup.getCheckedRadioButtonId() == R.id.skin_button) {
+                    faceView.setSkinColor(Color.rgb(progress, seekBar2.getProgress(), seekBar3.getProgress()));
+                }
+                faceView.invalidate(); // face redraws itself
+
             }
 
             @Override
@@ -83,6 +105,15 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 tvTwo.setVisibility(View.VISIBLE);
                 tvTwo.setText(progress + "");
+
+                if (radioGroup.getCheckedRadioButtonId() == R.id.hair_button) {
+                    faceView.setHairColor(Color.rgb(seekBar1.getProgress(), progress, seekBar3.getProgress()));
+                } else if (radioGroup.getCheckedRadioButtonId() == R.id.eye_button) {
+                    faceView.setEyeColor(Color.rgb(seekBar1.getProgress(), progress, seekBar3.getProgress()));
+                } else if (radioGroup.getCheckedRadioButtonId() == R.id.skin_button) {
+                    faceView.setSkinColor(Color.rgb(seekBar1.getProgress(), progress, seekBar3.getProgress()));
+                }
+                faceView.invalidate(); // face redraws itself
             }
 
             @Override
@@ -101,6 +132,15 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 tvThree.setVisibility(View.VISIBLE);
                 tvThree.setText(progress + "");
+
+                if (radioGroup.getCheckedRadioButtonId() == R.id.hair_button) {
+                    faceView.setHairColor(Color.rgb(seekBar1.getProgress(), seekBar2.getProgress(), progress));
+                } else if (radioGroup.getCheckedRadioButtonId() == R.id.eye_button) {
+                    faceView.setEyeColor(Color.rgb(seekBar1.getProgress(), seekBar2.getProgress(), progress));
+                } else if (radioGroup.getCheckedRadioButtonId() == R.id.skin_button) {
+                    faceView.setSkinColor(Color.rgb(seekBar1.getProgress(), seekBar2.getProgress(), progress));
+                }
+                faceView.invalidate(); // face redraws itself
             }
 
             @Override
@@ -123,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> styles = new ArrayList<>();
 
         //add strings to arrayList
-        styles.add("None Selected");
+        styles.add("Bald");
         styles.add("Bowl");
         styles.add("Buzz");
         styles.add("Middle Part");
@@ -133,11 +173,9 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
         spinner.setAdapter(adapter);
 
-        Random random = new Random();
-        int randomIndex = random.nextInt(styles.size());
 
         // Set the randomly selected item as the selected item in the spinner
-        spinner.setSelection(randomIndex);
+        spinner.setSelection(faceView.hairStyle);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -157,12 +195,47 @@ public class MainActivity extends AppCompatActivity {
         randomFace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Random ran = new Random();
+                int ranHair = ran.nextInt(styles.size());
+                spinner.setSelection(ranHair);
                 faceView.randomize();
-                spinner.setSelection(randomIndex);
+                faceView.invalidate();
+
+            }
+        });
+
+        // Set up the RadioGroup for hair, eyes, and skin RadioButtons
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                // Check which RadioButton is selected and update SeekBars accordingly
+                if (checkedId == R.id.hair_button) {
+                    updateSeekBars(faceView.getHairColor());
+                }
+                if (checkedId == R.id.eye_button) {
+                    updateSeekBars(faceView.getEyeColor());
+                }
+                if (checkedId == R.id.skin_button) {
+                    updateSeekBars(faceView.getSkinColor());
+                }
             }
         });
 
 
 
     }
+
+    private void updateSeekBars(int color) {
+        seekBar1.setProgress(Color.red(color));
+        seekBar2.setProgress(Color.green(color));
+        seekBar3.setProgress(Color.blue(color));
+    }
+
+
+
+
 }
+
+
+
+
