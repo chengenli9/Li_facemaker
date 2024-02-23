@@ -36,11 +36,8 @@ public class MainActivity extends AppCompatActivity {
     TextView tvOne;
     TextView tvTwo;
     TextView tvThree;
-
     Button randomFace;
-
     Face faceView;
-
     RadioGroup radioGroup;
 
     @Override
@@ -61,22 +58,27 @@ public class MainActivity extends AppCompatActivity {
         tvTwo = findViewById(R.id.numBlue);
         tvThree = findViewById(R.id.numGreen);
 
-
+        //RandomFace Button
         randomFace = findViewById(R.id.random_face);
-
+        //SurfaceView for the face being drawn
         faceView = findViewById(R.id.face_window);
-
+        //radio buttons for selecting hair, eyes, skin
         radioGroup = findViewById(R.id.radio_group);
 
-
+        //seek bar used to change the value of red in the rgb color
+        //updates the value of tvOne to the current value of red
+        //changes the color depending on the radio button selected like "hair", "Eye", "Skin"
         seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                //make value visible when seekbar is moved
                 tvOne.setVisibility(View.VISIBLE);
 
                 //sets the text based on progress value
                 tvOne.setText(progress + "");
 
+                //changes the values of red for face option selected
+                //keeps the progress from green and blue
                 if (radioGroup.getCheckedRadioButtonId() == R.id.hair_button) {
                     faceView.setHairColor(Color.rgb(progress, seekBar2.getProgress(), seekBar3.getProgress()));
 
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //same as seekbar 1, but this seekbar changes the green value
         seekBar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
@@ -127,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //same as seekbar 1, but this seekbar changes the blue value
         seekBar3.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
@@ -156,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
 
         //code to implement spinner was borrowed from:
         //https://www.youtube.com/watch?v=4ogzfAipGS8
-
         Spinner spinner = findViewById(R.id.HairStyles);
 
         //create the arrayList for the spinner
@@ -192,11 +195,16 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        //call setOnClickListener on randomFace button
+        // calls randomize() method
+        // selects a random hairStyle
         randomFace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Random ran = new Random();
+                //picks random option from style arrayList
                 int ranHair = ran.nextInt(styles.size());
+                //sets random option from spinner
                 spinner.setSelection(ranHair);
                 faceView.randomize();
                 faceView.invalidate();
@@ -225,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //updates the progress of the seekbar values/ color values
     private void updateSeekBars(int color) {
         seekBar1.setProgress(Color.red(color));
         seekBar2.setProgress(Color.green(color));

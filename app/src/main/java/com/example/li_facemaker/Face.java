@@ -20,13 +20,15 @@ import java.util.Random;
  * --------------------------
  *
  **/
-
 public class Face extends SurfaceView {
+
+    //values for changing rgb of different parts of the face
     public int skinColor;
     public int eyeColor;
     public int hairColor;
     public int hairStyle;
 
+    //create new Paint objects for coloring shapes
     Paint facePaint = new Paint();
     Paint eyePaint = new Paint();
     Paint eyeWhite = new Paint();
@@ -38,22 +40,18 @@ public class Face extends SurfaceView {
 
 
 
-
+    //face constructor
     public Face(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-
+        //creates random face when page is refreshed or opened
         randomize();
+        //shows that is being created on the screen
         setWillNotDraw(false);
-        //randomizes the variables
 
 
+        //sets the hairStyle so it knows which hair style to draw on the head
         setHairStyle(hairStyle);
-
-
-        eyeWhite.setColor(Color.WHITE);
-        mouthPaint.setColor(Color.WHITE);
-        setBackgroundColor(Color.WHITE);
 
     }
 
@@ -87,17 +85,24 @@ public class Face extends SurfaceView {
 
     //onDraw method
     public void onDraw(Canvas canvas) {
-
+        //sets the color for Paint
         facePaint.setColor(skinColor);
         hairPaint.setColor(hairColor);
         eyePaint.setColor(eyeColor);
 
+        eyeWhite.setColor(Color.WHITE);
+        mouthPaint.setColor(Color.WHITE);
+        setBackgroundColor(Color.WHITE);
+
+        //get the full width and height of the surfaceView
         float sv_width = canvas.getWidth();
         float sv_height = canvas.getHeight();
 
+        //center point of the SurfaceView
         float centerX = canvas.getWidth() / 2;
         float centerY = canvas.getHeight() / 2;
 
+        //RectF for drawing Arcs, used as reference
         RectF face_ref = new RectF(centerX - 200, centerY - 250, centerX + 200, centerY + 250);
         RectF bowlcut = new RectF(centerX - 200, centerY - 250, centerX + 200, centerY + 100);
         RectF midPartRight = new RectF(centerX - 180, centerY - 300, centerX + 250, centerY + 100);
@@ -142,11 +147,12 @@ public class Face extends SurfaceView {
             //MoHawk
             canvas.drawOval(centerX - 20, centerY - 300, centerX + 20, centerY - 120, hairPaint);
         }
-        //eyes
+
 
 
     }
 
+    //helper methods:
     public int getSkinColor() {
 
         return this.skinColor;
